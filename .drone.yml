@@ -1,0 +1,32 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: docker
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo: registry.meow.tf/astra/precise
+      registry: registry.meow.tf
+      tags:
+        - latest
+    depends_on:
+      - clone
+  - name: docker-gpu
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      dockerfile: Dockerfile.gpu
+      repo: registry.meow.tf/astra/precise
+      registry: registry.meow.tf
+      tags:
+        - latest-gpu
+    depends_on:
+      - clone
