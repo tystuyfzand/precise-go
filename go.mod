@@ -1,4 +1,4 @@
-module git.meow.tf/astra/precise
+module github.com/tystuyfzand/precise-go
 
 go 1.19
 
