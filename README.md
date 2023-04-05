@@ -2,7 +2,9 @@ Precise-Lite for Go
 ===================
 
 This is a Go port of the [MycroftAI Precise](https://github.com/MycroftAI/mycroft-precise) engine, using tflite and onnxruntime 
-(based on the [OpenVoiceOS fork](https://github.com/OpenVoiceOS/precise-lite))
+(based on the [OpenVoiceOS fork](https://github.com/OpenVoiceOS/precise-lite)).
+
+I needed this for my Discord bot [Astra](https://astra.bot) - which I'm currently training a model for. Help us out [here](https://train.astra.bot/) and submit a few voice clips!
 
 
 What is working?
