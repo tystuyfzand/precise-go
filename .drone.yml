@@ -3,6 +3,17 @@ type: docker
 name: default
 
 steps:
+  - name: tflite
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      repo: ghcr.io/tystuyfzand/precise-go
+      registry: ghcr.io
+      tags:
+        - tflite
   - name: docker
     image: plugins/docker
     settings:
@@ -16,7 +27,7 @@ steps:
         - latest
         - ubuntu-jammy
     depends_on:
-      - clone
+      - tflite
   - name: docker-gpu
     image: plugins/docker
     settings:
@@ -31,6 +42,8 @@ steps:
       tags:
         - ubuntu-jammy-gpu
         - latest-gpu
+    depends_on:
+      - tflite
   - name: docker-debian
     image: plugins/docker
     settings:
@@ -45,4 +58,4 @@ steps:
       tags:
         - debian
     depends_on:
-      - clone
+      - tflite
