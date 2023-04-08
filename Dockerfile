@@ -1,6 +1,8 @@
 ARG BASE_IMAGE=ubuntu:jammy
 FROM $BASE_IMAGE AS builder
 
+LABEL org.opencontainers.image.description="Base docker image with tensorflow lite, onnxruntime, and Go for precise-go"
+
 ARG GO_VERSION=1.20.3
 
 RUN apt-get update && \
@@ -17,10 +19,12 @@ ENV PATH=$PATH:/usr/local/go/bin
 
 # Re-use our prebuilt tflite (for all builds)
 COPY --from=ghcr.io/tystuyfzand/precise-go:tflite /usr/src/tensorflow/ /usr/src/tensorflow/
+COPY --from=ghcr.io/tystuyfzand/precise-go:tflite /usr/include/tf-include.tar.gz /usr/include
 
-# These two files can be copied out into your resulting final image
-RUN cp /usr/src/tensorflow/bazel-bin/tensorflow/lite/libtensorflowlite.so /usr/lib && \
-    cp /usr/src/tensorflow/bazel-bin/tensorflow/lite/c/libtensorflowlite_c.so /usr/lib
+# Extract the archive (done to ensure we have all that we need in one spot - bazel puts it into a "cache" folder that changes)
+RUN tar -C /usr/include -xvf /usr/include/tf-include.tar.gz
+
+COPY --from=ghcr.io/tystuyfzand/precise-go:tflite /usr/lib/libtensorflowlite.so /usr/lib/libtensorflowlite_c.so /usr/lib/
 
 ENV CGO_CFLAGS="-I/usr/src/tensorflow"
 ENV CGO_LDFLAGS="-L/usr/src/tensorflow/bazel-bin/tensorflow/lite"

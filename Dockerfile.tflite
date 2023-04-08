@@ -1,4 +1,6 @@
-FROM debian:bullseye
+FROM debian:bullseye AS builder
+
+LABEL org.opencontainers.image.description="Base docker image with Tensorflow lite for precise-go builds"
 
 RUN apt-get update && \
     apt-get -y install git build-essential curl ca-certificates && \
@@ -27,5 +29,18 @@ RUN apt-get install -y python3 python3-pip && \
 
 RUN cd /usr/src/tensorflow && \
     ./configure && \
-    bazel build --config opt --config monolithic //tensorflow/lite:libtensorflowlite.so && \
-    bazel build --config opt --config monolithic //tensorflow/lite/c:libtensorflowlite_c.so
+    bazel build --config opt --config monolithic //tensorflow:install_headers //tensorflow/lite:libtensorflowlite.so //tensorflow/lite/c:libtensorflowlite_c.so && \
+	cp /usr/src/tensorflow/bazel-bin/tensorflow/lite/libtensorflowlite.so /usr/lib && \
+    cp /usr/src/tensorflow/bazel-bin/tensorflow/lite/c/libtensorflowlite_c.so /usr/lib && \
+    tar -C /usr/src/tensorflow/bazel-bin/tensorflow/include -zcvf /usr/include/tf-include.tar.gz . && \
+    cp -R /usr/src/tensorflow/bazel-bin/tensorflow/include/* /usr/include/
+
+FROM debian:bullseye
+
+# Multi-stage build because bazel creates a lot of excess items. We only need the include files and libraries.
+
+COPY --from=builder /usr/include/tf-include.tar.gz /usr/include
+
+RUN tar -C /usr/include -xvf /usr/include/tf-include.tar.gz
+
+COPY --from=builder /usr/lib/libtensorflowlite.so /usr/lib/libtensorflowlite_c.so /usr/lib/
