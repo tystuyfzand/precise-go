@@ -10,8 +10,8 @@ steps:
         from_secret: docker_username
       password:
         from_secret: docker_password
-      repo: registry.meow.tf/astra/precise
-      registry: registry.meow.tf
+      repo: ghcr.io/tystuyfzand/precise-go
+      registry: ghcr.io
       tags:
         - latest
     depends_on:
@@ -23,9 +23,10 @@ steps:
         from_secret: docker_username
       password:
         from_secret: docker_password
-      dockerfile: Dockerfile.gpu
-      repo: registry.meow.tf/astra/precise
-      registry: registry.meow.tf
+      build_args:
+        BASE_IMAGE: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
+      repo: ghcr.io/tystuyfzand/precise-go
+      registry: ghcr.io
       tags:
         - latest-gpu
     depends_on:
