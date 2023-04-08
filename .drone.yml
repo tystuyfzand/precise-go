@@ -12,6 +12,7 @@ steps:
         from_secret: docker_password
       repo: ghcr.io/tystuyfzand/precise-go
       registry: ghcr.io
+      dockerfile: Dockerfile.tflite
       tags:
         - tflite
   - name: docker
