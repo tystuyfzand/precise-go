@@ -18,13 +18,11 @@ RUN curl -L -o /usr/local/go${GO_VERSION}.tar.gz https://go.dev/dl/go${GO_VERSIO
 ENV PATH=$PATH:/usr/local/go/bin
 
 # Re-use our prebuilt tflite (for all builds)
-COPY --from=ghcr.io/tystuyfzand/precise-go:tflite /usr/src/tensorflow/ /usr/src/tensorflow/
 COPY --from=ghcr.io/tystuyfzand/precise-go:tflite /usr/include/tf-include.tar.gz /usr/include
+COPY --from=ghcr.io/tystuyfzand/precise-go:tflite /usr/lib/libtensorflowlite.so /usr/lib/libtensorflowlite_c.so /usr/lib/
 
 # Extract the archive (done to ensure we have all that we need in one spot - bazel puts it into a "cache" folder that changes)
 RUN tar -C /usr/include -xvf /usr/include/tf-include.tar.gz
-
-COPY --from=ghcr.io/tystuyfzand/precise-go:tflite /usr/lib/libtensorflowlite.so /usr/lib/libtensorflowlite_c.so /usr/lib/
 
 ENV CGO_CFLAGS="-I/usr/src/tensorflow"
 ENV CGO_LDFLAGS="-L/usr/src/tensorflow/bazel-bin/tensorflow/lite"
