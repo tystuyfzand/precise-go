@@ -14,6 +14,7 @@ steps:
       registry: ghcr.io
       tags:
         - latest
+        - ubuntu-jammy
     depends_on:
       - clone
   - name: docker-gpu
@@ -28,6 +29,20 @@ steps:
       repo: ghcr.io/tystuyfzand/precise-go
       registry: ghcr.io
       tags:
+        - ubuntu-jammy-gpu
         - latest-gpu
+  - name: docker-debian
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      build_args:
+        BASE_IMAGE: debian:bullseye
+      repo: ghcr.io/tystuyfzand/precise-go
+      registry: ghcr.io
+      tags:
+        - debian
     depends_on:
       - clone

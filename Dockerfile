@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=ubuntu:22.04
+ARG BASE_IMAGE=ubuntu:jammy
 FROM $BASE_IMAGE AS builder
 
 ARG GO_VERSION=1.20.3
